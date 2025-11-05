@@ -1,0 +1,102 @@
+.main_nav {
+  width: 100vw;
+  height: 5rem;
+  position: fixed;
+  background: linear-gradient(
+    90deg,
+    var(--main-background-color-dark-green) 25%,
+    /* var(--primary-color-lightgreen) 40%, */ var(--secondary-color-white) 100%
+  );
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 999; /* High value to ensure navbar is on top */
+}
+.sub_nav_div {
+  width: 90%;
+  display: flex;
+  align-items: center;
+  justify-content: end;
+}
+.logo_box_navbar {
+  padding: 5px 10px;
+  display: grid;
+  place-items: center;
+}
+.logo_box_navbar > img {
+  width: 70%;
+  aspect-ratio: 3/2;
+  object-fit: contain;
+}
+
+.profile_pic_box {
+  width: 37px;
+  height: 37px;
+  border-radius: 37px;
+  background-color: #fff;
+  overflow: hidden;
+  z-index: 1002; /* Ensure it's above the card */
+}
+.profile_pic_box > img {
+  width: 100%;
+  aspect-ratio: 3/3;
+  object-fit: cover;
+}
+.main_dropdown_div {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 1rem !important;
+  background-color: var(--main-background-color-dark-green) !important;
+  border: none !important;
+  color: var(--primary-color-lightgreen) !important;
+  box-shadow: none !important;
+  border-radius: 10px !important;
+  z-index: 1000; /* High value to ensure dropdown is on top */
+}
+.dropdown-toggle::after {
+  font-size: 20px;
+}
+.inner_item {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 1rem;
+  z-index: 1001; /* Ensure it's above the card */
+}
+
+/* ? dropdown style start */
+
+.text {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 2rem;
+}
+/* !! notification */
+.notification {
+  position: relative;
+  display: inline-block;
+  border-radius: 2px;
+}
+
+.notification .badge {
+  position: absolute;
+  top: -10px;
+  right: -10px;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background-color: var(--primary-color-lightgreen);
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+/* !! notification */
+
+@media screen and (max-width: 600px) {
+  .main_dropdown_div > span {
+    display: none;
+  }
+}

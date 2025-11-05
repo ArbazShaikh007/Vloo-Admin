@@ -1,0 +1,537 @@
+/* .All-Conatinor-perfect-divv {
+  width: 90%;
+  height: 80vh;
+  border-radius: 6px;
+  padding: 1rem;
+  display: flex;
+  margin-left: 2rem;
+  justify-content: center;
+}
+.All-Containor-perfect-second-divv {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 2rem;
+  flex-direction: column;
+
+}
+.heding_div {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  width: 100%;
+}
+.addbtn_div {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 1rem;
+}
+
+.secondary_btn {
+  background-color: var(--main-background-color-dark-green);
+  padding: 10px 20px;
+  color: var(--primary-color-lightgreen);
+  border-radius: 10px;
+  transition: transform 0.3s ease;
+  cursor: pointer;
+}
+.secondary_btn:hover {
+  transform: translate(1);
+  background-color: var(--primary-color-lightgreen) !important;
+  color: var(--main-background-color-dark-green);
+}
+
+.main_div_of_model_body {
+  width: 100%;
+  height: 100%;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  padding: 1rem;
+}
+.main_div_of_form {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.input_filed_div {
+  width: 100%;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  flex-direction: column;
+  gap: 10px;
+}
+.input_filed_div > label {
+  font-size: 18px;
+  font-family: "BeVietnamPro-SemiBold";
+  color: var(--main-background-color-dark-green);
+}
+.input_field_box {
+  width: 100%;
+  height: 40px;
+  border: 1px solid var(--main-background-color-dark-green);
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.input_field_box > input {
+  width: 98%;
+  height: 90%;
+  outline: none;
+  border: none;
+  background-color: transparent;
+}
+
+.pac-target-input {
+  width: 100% !important; 
+}
+
+.pac-container {
+  z-index: 9999; 
+}
+
+.pac-card,
+.pac-container,
+.pac-item {
+  width: 100% !important;
+}
+
+.autocomplete-wrapper {
+  width: 100% !important;
+}
+@media screen and (max-width: 767px) {
+  .addbtn_div {
+    flex-direction: column;
+  }
+} */
+
+/* CSS Variables for your existing color scheme */
+:root {
+  /* --main-background-color-dark-green: #004e61;
+  --primary-color-lightgreen: #00c9a7; */
+  --error-color: #ef4444;
+  --text-primary: #1f2937;
+  --text-secondary: #6b7280;
+  --text-muted: #9ca3af;
+  --background-light: #f8fafc;
+  --border-color: #e5e7eb;
+  --border-hover: #d1d5db;
+  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1),
+    0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1),
+    0 4px 6px -2px rgba(0, 0, 0, 0.05);
+}
+
+/* Main Container */
+.add-zone-container {
+  min-height: 100vh;
+  /* background: linear-gradient(135deg, var(--background-light) 0%, #ffffff 100%); */
+  padding: 2rem;
+  font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+    sans-serif;
+}
+
+.add-zone-wrapper {
+  max-width: 1000px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+/* Header Section */
+.header-section {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1rem;
+}
+
+.back-button {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1.5rem;
+  background: white;
+  border: 2px solid var(--border-color);
+  border-radius: 12px;
+  color: var(--main-background-color-dark-green);
+  font-weight: 500;
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: var(--shadow-sm);
+}
+
+.back-button:hover {
+  background: var(--main-background-color-dark-green);
+  color: white;
+  border-color: var(--main-background-color-dark-green);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+}
+
+.header-title {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.header-title h1 {
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--main-background-color-dark-green);
+  margin: 0;
+  letter-spacing: -0.025em;
+}
+
+.header-icon {
+  color: var(--primary-color-lightgreen);
+}
+
+/* Form Card */
+.form-card {
+  background: white;
+  border-radius: 20px;
+  padding: 3rem;
+  box-shadow: var(--shadow-lg);
+  border: 1px solid var(--border-color);
+}
+
+.zone-form {
+  width: 100% !important;
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+/* Form Groups */
+.form-group {
+  width: 100% !important;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.form-label {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--main-background-color-dark-green);
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.required {
+  color: var(--error-color);
+  font-weight: 700;
+}
+
+/* Input Styles */
+.input-container {
+  position: relative;
+}
+
+.form-input {
+  width: 100%;
+  padding: 1rem;
+  border: 2px solid var(--border-color);
+  border-radius: 12px;
+  font-size: 1rem;
+  background: white;
+  transition: all 0.2s ease;
+  outline: none;
+  color: var(--text-primary);
+}
+
+.form-input:focus {
+  border-color: var(--primary-color-lightgreen);
+  box-shadow: 0 0 0 3px rgba(0, 201, 167, 0.1);
+}
+
+.form-input.error {
+  border-color: var(--error-color);
+  box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.1);
+}
+
+.form-input::placeholder {
+  color: var(--text-muted);
+}
+
+/* Location Search */
+.location-search-container {
+  width: 100%;
+}
+
+.search-input-container {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.search-icon {
+  position: absolute;
+  left: 1rem;
+  color: var(--text-muted);
+  z-index: 1;
+}
+
+.search-input {
+  width: 100%;
+  padding: 1rem 1rem 1rem 3rem;
+  border: 2px solid var(--border-color);
+  border-radius: 12px;
+  font-size: 1rem;
+  background: white;
+  transition: all 0.2s ease;
+  outline: none;
+  color: var(--text-primary);
+}
+
+.search-input:focus {
+  border-color: var(--primary-color-lightgreen);
+  box-shadow: 0 0 0 3px rgba(0, 201, 167, 0.1);
+}
+
+.search-input::placeholder {
+  color: var(--text-muted);
+}
+
+/* Selected Address */
+.selected-address {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 1rem;
+  background: rgba(0, 201, 167, 0.05);
+  border: 1px solid rgba(0, 201, 167, 0.2);
+  border-radius: 12px;
+  margin-top: 1rem;
+  color: var(--main-background-color-dark-green);
+  font-weight: 500;
+}
+
+/* Map Container */
+.map-container {
+  margin-top: 1.5rem;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: var(--shadow-md);
+  border: 2px solid var(--border-color);
+}
+
+/* Zone Details */
+.zone-details {
+  background: rgba(0, 78, 97, 0.02);
+  border: 1px solid rgba(0, 78, 97, 0.1);
+  border-radius: 12px;
+  padding: 1.5rem;
+}
+
+.zone-details h3 {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--main-background-color-dark-green);
+  margin: 0 0 1rem 0;
+}
+
+.details-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 1rem;
+}
+
+.detail-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.75rem;
+  background: white;
+  border-radius: 8px;
+  border: 1px solid var(--border-color);
+}
+
+.detail-label {
+  font-weight: 500;
+  color: var(--text-secondary);
+}
+
+.detail-value {
+  font-weight: 600;
+  color: var(--main-background-color-dark-green);
+}
+
+/* Error Message */
+.error-message {
+  color: var(--error-color);
+  font-size: 0.875rem;
+  margin: 0;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+/* Form Actions */
+.form-actions {
+  display: flex;
+  justify-content: center;
+  margin-top: 1rem;
+}
+
+.submit-button {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 1rem 2.5rem;
+  background: var(--main-background-color-dark-green);
+  color: white;
+  border: none;
+  border-radius: 12px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  min-width: 200px;
+  justify-content: center;
+  box-shadow: var(--shadow-md);
+}
+
+.submit-button:hover:not(:disabled) {
+  background: var(--primary-color-lightgreen);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-lg);
+}
+
+.submit-button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.loading-icon {
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Google Maps Autocomplete Styling */
+.pac-container {
+  z-index: 9999;
+  border-radius: 12px;
+  border: 1px solid var(--border-color);
+  box-shadow: var(--shadow-lg);
+  margin-top: 4px;
+  overflow: hidden;
+}
+
+.pac-item {
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--border-color);
+  cursor: pointer;
+  font-size: 14px;
+  transition: background-color 0.2s ease;
+}
+
+.pac-item:hover {
+  background-color: rgba(0, 201, 167, 0.05);
+}
+
+.pac-item:last-child {
+  border-bottom: none;
+}
+
+.pac-item-selected {
+  background-color: rgba(0, 201, 167, 0.1);
+}
+
+.pac-matched {
+  font-weight: 600;
+  color: var(--main-background-color-dark-green);
+}
+
+/* Responsive Design */
+@media screen and (max-width: 768px) {
+  .add-zone-container {
+    padding: 1rem;
+  }
+
+  .form-card {
+    padding: 2rem;
+    border-radius: 16px;
+  }
+
+  .header-section {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+  }
+
+  .header-title h1 {
+    font-size: 1.75rem;
+  }
+
+  .back-button {
+    align-self: flex-start;
+  }
+
+  .details-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .detail-item {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
+  }
+
+  .submit-button {
+    width: 100%;
+    min-width: unset;
+  }
+}
+
+@media screen and (max-width: 480px) {
+  .form-card {
+    padding: 1.5rem;
+  }
+
+  .header-title h1 {
+    font-size: 1.5rem;
+  }
+
+  .form-input,
+  .search-input {
+    padding: 0.875rem;
+    font-size: 0.95rem;
+  }
+
+  .search-input {
+    padding-left: 2.75rem;
+  }
+
+  .map-container {
+    height: 300px;
+  }
+}

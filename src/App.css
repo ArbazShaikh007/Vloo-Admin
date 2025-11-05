@@ -1,0 +1,79 @@
+:root {
+  --primary-color-lightgreen: #80d7d2;
+  --secondary-color-white: #ffffff;
+  --main-background-color-dark-green: #004d61;
+  --border-login-color-light-Gray: #f4f4f439;
+  --side-hover-background-color: #ffffff26;
+  --main-bg-color-light: #faffff;
+  --font-black-colour: #191f23;
+  --error-msg-color: #ff512f;
+}
+
+@font-face {
+  font-family: "Be Viettnam Pro Black";
+  src: url("./components/Fonts/BeVietnamPro/BeVietnamPro-Black.ttf");
+}
+@font-face {
+  font-family: "BeVietnamPro-BlackItalic";
+  src: url("./components/Fonts/BeVietnamPro/BeVietnamPro-BlackItalic.ttf");
+}
+@font-face {
+  font-family: "BeVietnamPro-Bold";
+  src: url("./components/Fonts/BeVietnamPro/BeVietnamPro-Bold.ttf");
+}
+@font-face {
+  font-family: "BeVietnamPro-BoldItalic";
+  src: url("./components/Fonts/BeVietnamPro/BeVietnamPro-BoldItalic.ttf");
+}
+@font-face {
+  font-family: "BeVietnamPro-ExtraBold";
+  src: url("./components/Fonts/BeVietnamPro/BeVietnamPro-ExtraBold.ttf");
+}
+@font-face {
+  font-family: "BeVietnamPro-ExtraBoldItalic";
+  src: url("./components/Fonts/BeVietnamPro/BeVietnamPro-ExtraBoldItalic.ttf");
+}
+@font-face {
+  font-family: "BeVietnamPro-ExtraLight";
+  src: url("./components/Fonts/BeVietnamPro/BeVietnamPro-ExtraLight.ttf");
+}
+@font-face {
+  font-family: "BeVietnamPro-ExtraLightItalic";
+  src: url("./components/Fonts/BeVietnamPro/BeVietnamPro-ExtraLightItalic.ttf");
+}
+@font-face {
+  font-family: "BeVietnamPro-Italic";
+  src: url("./components/Fonts/BeVietnamPro/BeVietnamPro-Italic.ttf");
+}
+@font-face {
+  font-family: "BeVietnamPro-LightItalic";
+  src: url("./components/Fonts/BeVietnamPro/BeVietnamPro-LightItalic.ttf");
+}
+@font-face {
+  font-family: "BeVietnamPro-Medium";
+  src: url("./components/Fonts/BeVietnamPro/BeVietnamPro-Medium.ttf");
+}
+@font-face {
+  font-family: "BeVietnamPro-MediumItalic";
+  src: url("./components/Fonts/BeVietnamPro/BeVietnamPro-MediumItalic.ttf");
+}
+@font-face {
+  font-family: "BeVietnamPro-Regular";
+  src: url("./components/Fonts/BeVietnamPro/BeVietnamPro-Regular.ttf");
+}
+@font-face {
+  font-family: "BeVietnamPro-SemiBold";
+  src: url("./components/Fonts/BeVietnamPro/BeVietnamPro-SemiBold.ttf");
+}
+@font-face {
+  font-family: "BeVietnamPro-SemiBoldItalic";
+  src: url("./components/Fonts/BeVietnamPro/BeVietnamPro-SemiBoldItalic.ttf");
+}
+@font-face {
+  font-family: "BeVietnamPro-Thin";
+  src: url("./components/Fonts/BeVietnamPro/BeVietnamPro-Thin.ttf");
+}
+@font-face {
+  font-family: "BeVietnamPro-ThinItalic";
+  src: url("./components/Fonts/BeVietnamPro/BeVietnamPro-ThinItalic.ttf");
+}

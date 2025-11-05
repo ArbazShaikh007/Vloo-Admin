@@ -1,0 +1,48 @@
+.Maintainer_main_div {
+  width: 100%;
+}
+
+@media screen and (max-width: 600px) {
+  .Maintainer_main_div {
+    width: 90%;
+  }
+}
+@media screen and (max-width: 1024px) {
+  .Maintainer_main_div {
+    width: 90%;
+  }
+}
+
+/* Background color for the suggestion list container */
+.pac-container {
+  background-color: #18251f !important;
+}
+
+/* Background color for each suggestion item */
+.pac-item {
+  background-color: #18251f !important;
+}
+
+/* Text color for each suggestion item */
+.pac-item span {
+  color: white !important;
+}
+
+/* Background color for each suggestion item on hover */
+.pac-item:hover {
+  background-color: white !important;
+}
+
+/* Ensuring the text color remains white on hover */
+.pac-item:hover span {
+  color: #18251f !important;
+}
+
+/* Hide the Google icon in the suggestions list */
+.pac-container.pac-logo::after {
+  display: none !important;
+}
+
+.pac-container.pac-item .pac-icon {
+  display: none !important;
+}

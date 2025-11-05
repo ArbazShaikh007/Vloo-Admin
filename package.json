@@ -1,0 +1,76 @@
+{
+  "name": "demo",
+  "homepage": "http://40.172.25.131/Vloo-admin",
+  "version": "0.1.0",
+  "private": true,
+  "dependencies": {
+    "@ckeditor/ckeditor5-build-classic": "^42.0.1",
+    "@ckeditor/ckeditor5-react": "^8.0.0",
+    "@emotion/react": "^11.11.0",
+    "@emotion/styled": "^11.11.0",
+    "@fortawesome/fontawesome-svg-core": "^6.5.2",
+    "@fortawesome/free-solid-svg-icons": "^6.5.2",
+    "@fortawesome/react-fontawesome": "^0.2.2",
+    "@mui/icons-material": "^5",
+    "@mui/material": "^5.18.0",
+    "@mui/styled-engine": "^5.16.2",
+    "@mui/system": "^5.18.0",
+    "@mui/x-date-pickers": "^5.0.20",
+    "@react-google-maps/api": "^2.20.7",
+    "@testing-library/jest-dom": "^5.17.0",
+    "@testing-library/react": "^13.4.0",
+    "@testing-library/user-event": "^13.5.0",
+    "@tsparticles/engine": "^3.5.0",
+    "apexcharts": "^4",
+    "axios": "^1.12.2",
+    "bootstrap": "^5.3.3",
+    "date-fns": "^2.30.0",
+    "dayjs": "^1.11.13",
+    "formik": "^2.4.6",
+    "framer-motion": "^11.3.2",
+    "html2canvas": "^1.4.1",
+    "jspdf": "^3.0.1",
+    "lucide-react": "^0.540.0",
+    "mdb-react-ui-kit": "^8.0.0",
+    "react": "^18.3.1",
+    "react-apexcharts": "^1.8.0",
+    "react-bootstrap": "^2.10.4",
+    "react-dom": "^18.3.1",
+    "react-hot-toast": "^2.4.1",
+    "react-icons": "^5.5.0",
+    "react-otp-input": "^3.1.1",
+    "react-phone-number-input": "^3.4.12",
+    "react-router-dom": "^6.24.1",
+    "react-scripts": "5.0.1",
+    "react-select": "^5.10.2",
+    "react-time-picker": "^8.0.2",
+    "react-tsparticles": "^2.12.2",
+    "tsparticles": "^3.5.0",
+    "web-vitals": "^2.1.4",
+    "yup": "^1.4.0"
+  },
+  "scripts": {
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test",
+    "eject": "react-scripts eject"
+  },
+  "eslintConfig": {
+    "extends": [
+      "react-app",
+      "react-app/jest"
+    ]
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  }
+}

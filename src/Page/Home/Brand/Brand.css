@@ -1,0 +1,59 @@
+/* your existing css ... */
+
+/* make sure table cells don't hide overflow */
+.table_body_user td {
+  vertical-align: middle;
+}
+
+/* actions column (just in case you had flex on last child before) */
+.actions-td {
+  display: flex;
+  gap: 12px;
+  justify-content: flex-start;
+  align-items: center;
+}
+
+/* toggle switch for is_popular */
+.switch {
+  position: relative;
+  display: inline-block;
+  width: 46px;
+  height: 24px;
+}
+
+.switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.slider {
+  position: absolute;
+  cursor: pointer;
+  inset: 0;
+  background-color: #d9f5f2; /* light teal to show on white */
+  transition: 0.3s;
+  border-radius: 999px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.slider:before {
+  position: absolute;
+  content: "";
+  height: 18px;
+  width: 18px;
+  left: 3px;
+  top: 3px;
+  background-color: #ffffff;
+  transition: 0.3s;
+  border-radius: 50%;
+}
+
+/* checked = your dark teal/top bar color */
+input:checked + .slider {
+  background-color: #00596a;
+}
+
+input:checked + .slider:before {
+  transform: translateX(22px);
+}

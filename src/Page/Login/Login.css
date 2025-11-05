@@ -1,0 +1,284 @@
+/* .main_div {
+  background: url("../../Assets/Login_bg.png");
+
+  width: 100%;
+  height: 100vh;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: 100% 100%;
+  display: grid;
+  place-items: center;
+  background-color: var(--main-bg-color-light);
+} */
+.main_div {
+  position: relative;
+  width: 100%;
+  height: 100vh;
+  display: grid;
+  place-items: center;
+  /* background-color: var(--primary-color-lightgreen); */
+}
+
+canvas {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  z-index: -1;
+}
+.sub_main_div {
+  width: 80%;
+  height: 90%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.login_card {
+  /* background: linear-gradient(
+    360deg,
+    var(--main-background-color-dark-green) 0%,
+    var(--secondary-color-white) 100%
+  ); */
+  background-color: var(--main-background-color-dark-green);
+  /* border: 0.5px solid #888888;
+  background: transparent;
+  backdrop-filter: blur(10px); */
+  width: 45%;
+  height: max-content;
+  padding-top: 2rem;
+  padding-bottom: 2rem;
+  border-radius: 10px;
+  box-shadow: #ffffff40 0px 50px 100px -20px, #ffffff4d 0px 30px 60px -30px,
+    #00000059 0px -2px 6px 0px inset;
+  /* opacity: 0.1; */
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  flex-direction: column;
+  gap: 2rem;
+}
+.logo_box {
+  width: 100%;
+  padding: 10px 0px;
+  display: grid;
+  place-items: center;
+
+  /* background-color: aquamarine; */
+}
+.logo_box > img {
+  width: 50%;
+  aspect-ratio: 3/1;
+  object-fit: contain;
+}
+.text_div {
+  padding-bottom: 10px;
+  border-bottom: 1px solid var(--secondary-color-white);
+}
+.text_div > h1 {
+  font-family: "BeVietnamPro-Medium";
+  color: var(--secondary-color-white);
+  font-size: 30px;
+  letter-spacing: 2px;
+  padding-bottom: 10px;
+  /* text-align: center; */
+}
+.text_div > h4 {
+  font-family: "BeVietnamPro-Medium";
+  color: var(--secondary-color-white);
+  font-size: 15px;
+  letter-spacing: 2px;
+  padding-bottom: 10px;
+  text-align: center;
+  text-transform: uppercase;
+}
+/* form styleing start here */
+.form_div {
+  width: 80%;
+  height: 60%;
+  /* background-color: var(--secondary-color-white); */
+}
+form {
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  flex-direction: column;
+  gap: 1rem;
+}
+.Email_box {
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  flex-direction: column;
+  gap: 10px;
+  width: 100%;
+}
+.Email_box > label {
+  font-family: "BeVietnamPro-Medium";
+  color: var(--secondary-color-white);
+  letter-spacing: 1px;
+  font-size: 15px;
+}
+.input_div {
+  width: 100%;
+  height: 35px;
+  overflow: hidden;
+  display: grid;
+  place-items: center;
+  border: 0.5px solid var(--secondary-color-white);
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.input_div > input {
+  width: 95%;
+  height: 85%;
+  background-color: transparent;
+  border: none;
+  outline: none;
+  font-size: 18px;
+  color: var(--secondary-color-white);
+  font-family: "BeVietnamPro-Regular";
+}
+.input_div_pass {
+  width: 100%;
+  height: 35px;
+  overflow: hidden;
+  display: grid;
+  place-items: center;
+  border: 0.5px solid var(--secondary-color-white);
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.select_div {
+  width: 100%;
+  height: 35px;
+  overflow: hidden;
+  display: grid;
+  place-items: center;
+  border: 0.5px solid var(--secondary-color-white);
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  outline: none;
+  background-color: transparent;
+  color: var(--secondary-color-white);
+}
+.select_div_inner {
+  width: 90%;
+  background-color: transparent;
+  color: var(--secondary-color-white);
+  outline: none;
+  border: none;
+}
+.select_div_inner > option {
+  background-color: transparent !important;
+  color: #000000 !important;
+}
+.input_div_pass > input {
+  width: 90%;
+  height: 85%;
+  background-color: transparent;
+  border: none;
+  outline: none;
+  font-size: 18px;
+  color: var(--secondary-color-white);
+  font-family: "BeVietnamPro-Regular";
+}
+.Forgot_text > p {
+  color: var(--secondary-color-white);
+  font-family: "BeVietnamPro-Regular";
+  font-size: 15px;
+  cursor: pointer;
+}
+.btn_primry {
+  width: 100%;
+  height: 35px;
+  border-radius: 6px;
+  border: none;
+  outline: none;
+  background-color: var(--secondary-color-white);
+  color: var(--main-background-color-dark-green);
+  font-family: "BeVietnamPro-SemiBold";
+  letter-spacing: 0.5px;
+  font-size: 15px;
+  cursor: pointer;
+}
+.btn_primry:hover {
+  border: 1px solid var(--secondary-color-white);
+  background-color: transparent;
+  color: var(--secondary-color-white);
+  transition: all ease 0.5s;
+}
+.errors_msg_p {
+  color: var(--error-msg-color);
+  font-size: 12px;
+  font-family: "BeVietnamPro-Regular";
+}
+.input_div_pass input:-webkit-autofill,
+.input_div_pass input:-webkit-autofill:hover,
+.input_div_pass input:-webkit-autofill:focus,
+.input_div_pass input:-webkit-autofill:active {
+  -webkit-text-fill-color: #ffffff !important;
+  -webkit-box-shadow: 0 0 0px 1000px var(--main-background-color-dark-green)
+    inset !important;
+  transition: background-color 5000s ease-in-out 0s;
+}
+
+@media screen and (max-width: 1140px) {
+  .logo_box > img {
+    width: 50%;
+    aspect-ratio: 3/1;
+    object-fit: contain;
+    display: block;
+  }
+  .main_div {
+    background: #ffffff;
+    /* background: url("../../Assets/Login/TABLET_BG.png"); */
+    width: 100%;
+    height: 100vh;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: contain;
+    display: grid;
+    place-items: center;
+  }
+  .login_card {
+    width: 95% !important;
+  }
+}
+@media screen and (max-width: 767px) {
+  .logo_box > img {
+    width: 50%;
+    aspect-ratio: 3/2;
+    object-fit: contain;
+    display: block;
+  }
+  .main_div {
+    /* background: url("../../Assets/Login/iPhone.png"); */
+    background: #181818;
+    width: 100%;
+    height: 100vh;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: contain;
+    display: grid;
+    place-items: center;
+    background-color: var(--main-bg-color-light);
+  }
+  .text_div > h1 {
+    font-size: 20px;
+  }
+  .text_div > h4 {
+    font-size: 10px;
+  }
+
+  .main_div {
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+  }
+}

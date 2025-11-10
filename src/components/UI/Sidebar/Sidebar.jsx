@@ -22,6 +22,7 @@ import { FaPuzzlePiece } from "react-icons/fa6";
 import { BiSupport } from "react-icons/bi";
 import { FaInfoCircle } from "react-icons/fa";
 import { MdAssessment } from "react-icons/md";
+import { BsSendFill } from "react-icons/bs";
 
 const menuItems = [
   {
@@ -90,6 +91,11 @@ const menuItems = [
     name: "Extras",
     link: "/Home/Extras",
     icon: <FaPuzzlePiece />,
+  },
+  {
+    name: "Broadcast",
+    link: "/Home/Broadcast",
+    icon: <BsSendFill />,
   },
   {
     name: "Contact Us",
@@ -220,7 +226,8 @@ const Sidebar = () => {
         m.name !== "Extras" &&
         m.name !== "Contact Us" &&
         m.name !== "Reports" &&
-        m.name !== "CMS"
+        m.name !== "CMS"&&
+        m.name !== "Broadcast"
     );
 
     const result = [];

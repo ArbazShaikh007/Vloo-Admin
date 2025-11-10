@@ -79,6 +79,7 @@ import Aboutus from "./Page/Home/Aboutus/index.jsx";
 import PrivacyPolicy from "./components/Cms-privew/PrivacyPolicy/PrivacyPolicy.jsx";
 import Reports from "./Page/Home/Reports/Reports.jsx";
 import SubZone from "./Page/Home/Zone/SubZone";
+import Broadcast from "./Page/Home/Broadcast/Broadcast.jsx";
 
 function App() {
   return (
@@ -166,6 +167,7 @@ function App() {
             <Route path="/Home/Assign" element={<Assign />} />
             <Route path="/Home/StoreTime" element={<StoreTime />} />
             <Route path="/Home/Extras" element={<Extras />} />
+            <Route path="/Home/Broadcast" element={<Broadcast />} />
             <Route path="/Home/Contact-us" element={<Contactus />} />
             <Route path="/Home/About-us" element={<Aboutus />} />
             <Route path="/Home/Reports" element={<Reports />} />

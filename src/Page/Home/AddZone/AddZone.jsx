@@ -18,8 +18,7 @@ import Backdrop from "@mui/material/Backdrop";
 
 /** Keep these stable */
 const GOOGLE_MAPS_LIBRARIES = ["places", "drawing", "geometry"];
-
-const GOOGLE_KEY = process.env.REACT_APP_MAP_KEY
+const GOOGLE_KEY = process.env.REACT_APP_MAP_KEY;
 
 const AddZone = () => {
   const { setreloadZoneList } = useContext(GlobalContext);
@@ -32,9 +31,13 @@ const AddZone = () => {
   const mapRef = useRef(null);
   const clearBtnRef = useRef(null);
 
+  // keep track of existing zone polygons on map
+  const existingPolygonsRef = useRef([]);
+
   // State
   const [loading, setloading] = useState(false);
   const [scriptReady, setScriptReady] = useState(false); // <- only true when drawing lib is ready
+  const [mapReady, setMapReady] = useState(false); // map instance ready
   const [locality, setLocality] = useState("");
   const [sublocality, setSublocality] = useState("");
   const [FullAddress, setFullAddress] = useState("");
@@ -43,14 +46,21 @@ const AddZone = () => {
   const [pathLatLng, setPathLatLng] = useState([]);
   const [mapCenter, setMapCenter] = useState({ lat: 24.7136, lng: 46.6753 }); // Riyadh
 
+  // existing zones list for map only
+  const [existingZones, setExistingZones] = useState([]);
+
   const MyToken = JSON.parse(localStorage.getItem("MYtokan"));
 
   /** ---- helpers ---- */
   const extractCityArea = (components) => {
-    let city = "", area = "";
+    let city = "",
+      area = "";
     (components || []).forEach((c) => {
       if (c.types.includes("locality")) city = c.long_name;
-      if (c.types.includes("sublocality") || c.types.includes("sublocality_level_1"))
+      if (
+        c.types.includes("sublocality") ||
+        c.types.includes("sublocality_level_1")
+      )
         area = c.long_name;
     });
     return { city, area };
@@ -58,9 +68,12 @@ const AddZone = () => {
 
   const computePolygonCentroid = (points) => {
     if (!points || points.length < 3) return null;
-    let area = 0, cx = 0, cy = 0;
+    let area = 0,
+      cx = 0,
+      cy = 0;
     for (let i = 0, j = points.length - 1; i < points.length; j = i++) {
-      const p1 = points[j], p2 = points[i];
+      const p1 = points[j],
+        p2 = points[i];
       const f = p1.lat * p2.lng - p2.lat * p1.lng;
       area += f;
       cx += (p1.lat + p2.lat) * f;
@@ -73,8 +86,8 @@ const AddZone = () => {
       return { lat: sx, lng: sy };
     }
     area *= 0.5;
-    cx /= (6 * area);
-    cy /= (6 * area);
+    cx /= 6 * area;
+    cy /= 6 * area;
     return { lat: cx, lng: cy };
   };
 
@@ -96,10 +109,10 @@ const AddZone = () => {
     });
   };
 
-  // ✅ NEW: convert drawn path to GeoJSON Polygon (outer ring), closing the ring
+  // convert drawn path to GeoJSON Polygon (outer ring), closing the ring
   const polygonPathToGeoJSON = (pts) => {
     if (!Array.isArray(pts) || pts.length < 3) return null;
-    const ring = pts.map(p => [p.lng, p.lat]); // GeoJSON is [lng, lat]
+    const ring = pts.map((p) => [p.lng, p.lat]); // GeoJSON is [lng, lat]
     const first = ring[0];
     const last = ring[ring.length - 1];
     if (first[0] !== last[0] || first[1] !== last[1]) ring.push(first);
@@ -110,13 +123,11 @@ const AddZone = () => {
   };
 
   const clearPolygon = () => {
-    // remove listeners
     const g = window.google?.maps;
     if (g) {
       listenersRef.current.forEach((l) => g.event.removeListener(l));
     }
     listenersRef.current = [];
-    // remove polygon
     if (polygonRef.current) {
       polygonRef.current.setMap(null);
       polygonRef.current = null;
@@ -127,6 +138,41 @@ const AddZone = () => {
     setFullAddress("");
     setLocality("");
     setSublocality("");
+  };
+
+  /** ✅ OVERLAP CHECK: prevent drawing over existing zones */
+  const isOverlappingExistingZones = (pts) => {
+    const g = window.google?.maps;
+    if (!g || !g.geometry || !g.geometry.poly) return false;
+    if (!existingPolygonsRef.current.length) return false;
+    if (!Array.isArray(pts) || pts.length < 3) return false;
+
+    const newPath = pts.map(
+      (p) => new g.LatLng(Number(p.lat), Number(p.lng))
+    );
+    const newPolygon = new g.Polygon({ paths: newPath });
+
+    for (const existingPoly of existingPolygonsRef.current) {
+      if (!existingPoly || !existingPoly.getPath) continue;
+
+      const existingPath = existingPoly.getPath().getArray();
+
+      // 1) any NEW point inside existing polygon
+      for (const pt of newPath) {
+        if (g.geometry.poly.containsLocation(pt, existingPoly)) {
+          return true;
+        }
+      }
+
+      // 2) any EXISTING polygon vertex inside new polygon
+      for (const v of existingPath) {
+        if (g.geometry.poly.containsLocation(v, newPolygon)) {
+          return true;
+        }
+      }
+    }
+
+    return false;
   };
 
   /** ---- Search box ---- */
@@ -152,7 +198,27 @@ const AddZone = () => {
     polygon.setEditable(true);
 
     const path = polygon.getPath();
-    const pts = path.getArray().map((ll) => ({ lat: ll.lat(), lng: ll.lng() }));
+    const pts = path.getArray().map((ll) => ({
+      lat: ll.lat(),
+      lng: ll.lng(),
+    }));
+
+    // ✅ OVERLAP CHECK here
+    if (isOverlappingExistingZones(pts)) {
+      toast.error("New zone overlaps with an existing zone.", {
+        position: "top-right",
+      });
+      polygon.setMap(null);
+      polygonRef.current = null;
+      setPathLatLng([]);
+      setCentroid(null);
+      setPlaceId("");
+      setFullAddress("");
+      setLocality("");
+      setSublocality("");
+      return;
+    }
+
     setPathLatLng(pts);
 
     const c = computePolygonCentroid(pts);
@@ -170,7 +236,23 @@ const AddZone = () => {
     }
 
     const updateFromPath = async () => {
-      const updated = path.getArray().map((ll) => ({ lat: ll.lat(), lng: ll.lng() }));
+      const updated = path.getArray().map((ll) => ({
+        lat: ll.lat(),
+        lng: ll.lng(),
+      }));
+
+      // ✅ re-check on edit/move as well
+      if (isOverlappingExistingZones(updated)) {
+        toast.error("Updated zone overlaps with an existing zone.", {
+          position: "top-right",
+        });
+        // revert visual polygon: just clear and force user to redraw
+        polygon.setMap(null);
+        polygonRef.current = null;
+        clearPolygon();
+        return;
+      }
+
       setPathLatLng(updated);
       const cc = computePolygonCentroid(updated);
       setCentroid(cc);
@@ -179,7 +261,9 @@ const AddZone = () => {
         if (rev2) {
           setPlaceId(rev2.place_id);
           setFullAddress(rev2.formatted_address);
-          const { city, area } = extractCityArea(rev2.address_components);
+          const { city, area } = extractCityArea(
+            rev2.address_components
+          );
           setLocality(city);
           setSublocality(area);
         }
@@ -225,18 +309,93 @@ const AddZone = () => {
     clearBtnRef.current = null;
   };
 
+  /** ---- Fetch existing zones once ---- */
+  const fetchExistingZones = async () => {
+    try {
+      const res = await axios.post(
+        "/admin_view/zone_list",
+        { page: 1, keyword: "" },
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `${MyToken}`,
+          },
+        }
+      );
+      setExistingZones(res?.data?.zone_list || []);
+    } catch (error) {
+      console.log("fetchExistingZones error:", error);
+      setExistingZones([]);
+    }
+  };
+
+  useEffect(() => {
+    fetchExistingZones();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  /** ---- Draw existing zone polygons on the map (non-editable) ---- */
+  useEffect(() => {
+    const g = window.google?.maps;
+    const map = mapRef.current;
+
+    if (!g || !map || !scriptReady || !mapReady) return;
+    if (!Array.isArray(existingZones)) return;
+
+    // Clear previous polygons
+    existingPolygonsRef.current.forEach((poly) => poly.setMap(null));
+    existingPolygonsRef.current = [];
+
+    existingZones.forEach((z) => {
+      try {
+        const rawPath = z.polygon_path || z.zone_polygon_path;
+        if (!rawPath) return;
+
+        let arr = rawPath;
+        if (typeof rawPath === "string") {
+          try {
+            arr = JSON.parse(rawPath);
+          } catch {
+            arr = null;
+          }
+        }
+
+        if (Array.isArray(arr) && arr.length) {
+          const poly = new g.Polygon({
+            paths: arr,
+            strokeColor: "#2563eb",
+            strokeOpacity: 0.9,
+            strokeWeight: 2,
+            fillColor: "#93c5fd",
+            fillOpacity: 0.18,
+            clickable: false,
+            editable: false,
+          });
+          poly.setMap(map);
+          existingPolygonsRef.current.push(poly);
+        }
+      } catch (err) {
+        console.log("draw polygon error:", err);
+      }
+    });
+  }, [existingZones, scriptReady, mapReady]);
+
   /** ---- Form ---- */
   const onSubmit = async (values, { resetForm }) => {
     try {
       if (!centroid || !placeId) {
-        toast.error("Please draw a polygon first.", { position: "top-right" });
+        toast.error("Please draw a polygon first.", {
+          position: "top-right",
+        });
         return;
       }
 
-      // ✅ Build GeoJSON from the drawn path
       const polygonGeoJSON = polygonPathToGeoJSON(pathLatLng);
       if (!polygonGeoJSON) {
-        toast.error("Invalid polygon. Please draw at least 3 points.", { position: "top-right" });
+        toast.error(
+          "Invalid polygon. Please draw at least 3 points.",
+          { position: "top-right" }
+        );
         return;
       }
 
@@ -251,8 +410,8 @@ const AddZone = () => {
           place_id: placeId,
           lat: centroid.lat,
           long: centroid.lng,
-          polygon_path: pathLatLng,          // keep your existing field
-          polygon_geojson: polygonGeoJSON,   // ✅ new: full polygon as GeoJSON
+          polygon_path: pathLatLng,
+          polygon_geojson: polygonGeoJSON,
         },
         {
           headers: {
@@ -261,7 +420,9 @@ const AddZone = () => {
           },
         }
       );
-      toast.success(response.data.message, { position: "top-right" });
+      toast.success(response.data.message, {
+        position: "top-right",
+      });
       setreloadZoneList(true);
       resetForm();
       clearPolygon();
@@ -289,14 +450,15 @@ const AddZone = () => {
     let tries = 0;
     const max = 20; // ~2s total
     const tick = () => {
-      const ready = !!window.google?.maps?.drawing && !!window.google?.maps?.places;
+      const ready =
+        !!window.google?.maps?.drawing &&
+        !!window.google?.maps?.places;
       if (ready) {
         setScriptReady(true);
       } else if (tries < max) {
         tries += 1;
         setTimeout(tick, 100);
       } else {
-        // show page anyway, but drawing won't appear (API/lib issue)
         setScriptReady(false);
         console.warn("Google drawing library not available.");
       }
@@ -334,12 +496,16 @@ const AddZone = () => {
                   onChange={formik.handleChange}
                   onBlur={formik.handleBlur}
                   className={`form-input ${
-                    formik.errors.Name && formik.touched.Name ? "error" : ""
+                    formik.errors.Name && formik.touched.Name
+                      ? "error"
+                      : ""
                   }`}
                   placeholder="Enter zone name"
                 />
                 {formik.errors.Name && formik.touched.Name && (
-                  <p className="error-message">{formik.errors.Name}</p>
+                  <p className="error-message">
+                    {formik.errors.Name}
+                  </p>
                 )}
               </div>
 
@@ -358,11 +524,16 @@ const AddZone = () => {
                   {/* Search box */}
                   <div className="location-search-container">
                     <Autocomplete
-                      onLoad={(ac) => (autocompleteRef.current = ac)}
+                      onLoad={(ac) =>
+                        (autocompleteRef.current = ac)
+                      }
                       onPlaceChanged={handlePlaceChanged}
                     >
                       <div className="search-input-container">
-                        <FiSearch className="search-icon" size={20} />
+                        <FiSearch
+                          className="search-icon"
+                          size={20}
+                        />
                         <input
                           type="text"
                           placeholder="Search to move the map (city/area/address)"
@@ -375,13 +546,21 @@ const AddZone = () => {
                   {(FullAddress || placeId) && (
                     <div className="selected-address">
                       <FiMapPin size={16} />
-                      <span style={{ marginInlineStart: 8 }}>
+                      <span
+                        style={{ marginInlineStart: 8 }}
+                      >
                         {FullAddress || "Center resolved"}
                       </span>
                     </div>
                   )}
 
-                  <div style={{ width: "100%", height: "400px", borderRadius: 12 }}>
+                  <div
+                    style={{
+                      width: "100%",
+                      height: "400px",
+                      borderRadius: 12,
+                    }}
+                  >
                     <GoogleMap
                       mapContainerStyle={{
                         width: "100%",
@@ -394,10 +573,12 @@ const AddZone = () => {
                       onLoad={(map) => {
                         mapRef.current = map;
                         addClearControl(map);
+                        setMapReady(true);
                       }}
                       onUnmount={(map) => {
                         removeClearControl(map);
                         mapRef.current = null;
+                        setMapReady(false);
                       }}
                       options={{
                         streetViewControl: false,
@@ -406,55 +587,85 @@ const AddZone = () => {
                         clickableIcons: false,
                       }}
                     >
-                      {/* ✅ Only render when drawing lib is ready */}
-                      {scriptReady && window.google?.maps?.drawing && (
-                        <DrawingManager
-                          onPolygonComplete={onPolygonComplete}
-                          options={{
-                            drawingControl: true,
-                            drawingControlOptions: {
-                              position: window.google.maps.ControlPosition.TOP_LEFT,
-                              drawingModes: [
-                                window.google.maps.drawing.OverlayType.POLYGON,
-                              ],
-                            },
-                            polygonOptions: {
-                              fillOpacity: 0.15,
-                              strokeWeight: 2,
-                              editable: true,
-                            },
-                          }}
-                        />
-                      )}
+                      {/* existing zones polygons already drawn via useEffect */}
 
-                      {centroid && <Marker position={centroid} />}
+                      {/* Drawing tools for new zone */}
+                      {scriptReady &&
+                        window.google?.maps?.drawing && (
+                          <DrawingManager
+                            onPolygonComplete={
+                              onPolygonComplete
+                            }
+                            options={{
+                              drawingControl: true,
+                              drawingControlOptions: {
+                                position:
+                                  window.google.maps
+                                    .ControlPosition
+                                    .TOP_LEFT,
+                                drawingModes: [
+                                  window.google.maps
+                                    .drawing
+                                    .OverlayType.POLYGON,
+                                ],
+                              },
+                              polygonOptions: {
+                                fillOpacity: 0.15,
+                                strokeWeight: 2,
+                                editable: true,
+                              },
+                            }}
+                          />
+                        )}
+
+                      {centroid && (
+                        <Marker position={centroid} />
+                      )}
                     </GoogleMap>
                   </div>
                 </LoadScriptNext>
               </div>
 
               {/* Zone details */}
-              {(locality || sublocality || centroid) && (
+              {(locality ||
+                sublocality ||
+                centroid) && (
                 <div className="zone-details">
                   <h3>Zone Details</h3>
                   <div className="details-grid">
                     {locality && (
                       <div className="detail-item">
-                        <span className="detail-label">City:</span>
-                        <span className="detail-value">{locality}</span>
+                        <span className="detail-label">
+                          City:
+                        </span>
+                        <span className="detail-value">
+                          {locality}
+                        </span>
                       </div>
                     )}
                     {sublocality && (
                       <div className="detail-item">
-                        <span className="detail-label">Area:</span>
-                        <span className="detail-value">{sublocality}</span>
+                        <span className="detail-label">
+                          Area:
+                        </span>
+                        <span className="detail-value">
+                          {sublocality}
+                        </span>
                       </div>
                     )}
                     {centroid && (
                       <div className="detail-item">
-                        <span className="detail-label">Center (lat,lng):</span>
+                        <span className="detail-label">
+                          Center (lat,lng):
+                        </span>
                         <span className="detail-value">
-                          {centroid.lat.toFixed(6)}, {centroid.lng.toFixed(6)}
+                          {centroid.lat.toFixed(
+                            6
+                          )}
+                          ,{" "}
+                          {centroid.lng.toFixed(
+                            6
+                          )}
                         </span>
                       </div>
                     )}
@@ -467,11 +678,19 @@ const AddZone = () => {
                 <button
                   type="submit"
                   className="submit-button"
-                  disabled={loading || !formik.values.Name || !centroid || !placeId}
+                  disabled={
+                    loading ||
+                    !formik.values.Name ||
+                    !centroid ||
+                    !placeId
+                  }
                 >
                   {loading ? (
                     <>
-                      <FiLoader className="loading-icon" size={20} />
+                      <FiLoader
+                        className="loading-icon"
+                        size={20}
+                      />
                       Creating Zone...
                     </>
                   ) : (
@@ -491,7 +710,8 @@ const AddZone = () => {
         <Backdrop
           sx={{
             color: "#fff",
-            zIndex: (theme) => theme.zIndex.drawer + 1,
+            zIndex: (theme) =>
+              theme.zIndex.drawer + 1,
             backgroundColor: "#004e61ad",
           }}
           open

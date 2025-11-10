@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import "./Das.css";
 import { useNavigate } from "react-router-dom";
 import axios from "../../../Common/Api/Api";
@@ -9,6 +9,7 @@ import ReactApexChart from "react-apexcharts";
 import { FaUsers } from "react-icons/fa";
 import { FaUserTie } from "react-icons/fa6";
 import { MdMiscellaneousServices } from "react-icons/md";
+import { GlobalContext } from "../../../GlobalContext";
 
 const Index = () => {
   const navigate = useNavigate();
@@ -17,10 +18,11 @@ const Index = () => {
   const [loading, setloading] = useState(false);
   const [Dashcount, setDashcount] = useState();
 
+  const { is_subadmin } = useContext(GlobalContext);
+
   const Dashboardcount = async () => {
     setloading(true);
     try {
-      // get browser local timezone (e.g. "Asia/Kolkata")
       const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
 
       const Response = await axios.post(
@@ -41,8 +43,6 @@ const Index = () => {
     } catch (error) {
       console.log("Dashboardcount error:", error);
       setloading(false);
-      // optional: toast error
-      // toast.error("Something went wrong");
     }
   };
 
@@ -50,28 +50,42 @@ const Index = () => {
     Dashboardcount();
   }, []);
 
-  const cardItems = [
-    {
-      icon: FaUsers,
-      name: "Total Users",
-      link: "/Home/Userlist",
-      count: Dashcount?.user_counts,
-    },
-    {
-      icon: FaUserTie,
-      name: "Total Provider",
-      link: "/Home/ServiceProvider",
-      count: Dashcount?.provider_counts,
-    },
-    {
-      icon: MdMiscellaneousServices,
-      name: "Total Services",
-      link: "/Home/AllServices",
-      count: Dashcount?.services_counts,
-    },
-  ];
+  const cardItems = is_subadmin
+    ? [
+        {
+          icon: FaUserTie,
+          name: "Total Workers",
+          link: "/Home/ServiceProvider",
+          count: Dashcount?.provider_counts,
+        },
+        {
+          icon: MdMiscellaneousServices,
+          name: "Total Services",
+          link: "/Home/AllServices",
+          count: Dashcount?.services_counts,
+        },
+      ]
+    : [
+        {
+          icon: FaUsers,
+          name: "Total Users",
+          link: "/Home/Userlist",
+          count: Dashcount?.user_counts,
+        },
+        {
+          icon: FaUserTie,
+          name: "Total Provider",
+          link: "/Home/ServiceProvider",
+          count: Dashcount?.provider_counts,
+        },
+        {
+          icon: MdMiscellaneousServices,
+          name: "Total Services",
+          link: "/Home/AllServices",
+          count: Dashcount?.services_counts,
+        },
+      ];
 
-  // chart components can stay as you had them
   class ApexChart extends React.Component {
     constructor(props) {
       super(props);
@@ -234,7 +248,7 @@ const Index = () => {
               })}
             </div>
 
-            {/* if you want to show charts again, just uncomment */}
+            {/* Chart section (optional) */}
             {/* <div className="Des_heading_text">
               <h2>User Data</h2>
             </div>

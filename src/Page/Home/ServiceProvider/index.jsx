@@ -297,7 +297,7 @@ const Index = () => {
                       </td>
 
                       <td>
-                        <MDBBtn
+                        {/* <MDBBtn
                           rounded
                           size="sm"
                           style={{
@@ -308,7 +308,7 @@ const Index = () => {
                           onClick={() => HandleEditmodel(item)}
                         >
                           {Edit}
-                        </MDBBtn>
+                        </MDBBtn> */}
                         <MDBBtn
                           style={{
                             background: "var(--primary-color-lightgreen)",

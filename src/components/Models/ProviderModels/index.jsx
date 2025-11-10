@@ -30,6 +30,7 @@ export const AddproviderModel = () => {
     setSelectedprovider,
     reloadProviderList,
     setreloadProviderList,
+    is_subadmin,
   } = useContext(GlobalContext);
   const handleClose = () => {
     setAddprovidermodel(false);
@@ -62,8 +63,12 @@ export const AddproviderModel = () => {
       const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
 
       setloading(true);
+      const endpoint = is_subadmin
+        ? "admin_view/add_provider"
+        : "admin_view/add_main_provider";
+
       const response = await axios.post(
-        "admin_view/add_provider",
+        endpoint,
         {
           name: values.Name,
           email: values.Email,
@@ -104,10 +109,6 @@ export const AddproviderModel = () => {
     initialValues: initialValues,
     validationSchema: ProviderSchemas,
     onSubmit,
-    // onSubmit: (values, { resetForm }) => {
-    //   console.log(values);
-    //   resetForm();
-    // },
   });
   useEffect(() => {
     if (value) {
@@ -127,7 +128,7 @@ export const AddproviderModel = () => {
       >
         <Modal.Header closeButton className="model_title">
           <Modal.Title style={{ color: "#004d61" }}>
-            Add Service Provider
+            {is_subadmin ? "Add New Worker" : "Add Service Provider"}
           </Modal.Title>
         </Modal.Header>
         <Modal.Body className="modelbg">
@@ -194,7 +195,6 @@ export const AddproviderModel = () => {
                   style={{
                     background: "var(--main-background-color-dark-green)",
                   }}
-                  // onClick={handleClose}
                 >
                   Submit
                 </Button>
@@ -206,6 +206,7 @@ export const AddproviderModel = () => {
     </>
   );
 };
+
 export const EditproviderModel = () => {
   const {
     Editprovidermodel,
@@ -216,6 +217,7 @@ export const EditproviderModel = () => {
     setSelectedprovider,
     reloadProviderList,
     setreloadProviderList,
+    is_subadmin,
   } = useContext(GlobalContext);
   console.log("🚀 ~ EditproviderModel ~ Selectedprovider:", Selectedprovider);
   const handleClose = () => {
@@ -250,8 +252,12 @@ export const EditproviderModel = () => {
       const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
 
       setloading(true);
+      const endpoint = is_subadmin
+        ? "admin_view/add_provider"
+        : "admin_view/add_main_provider";
+
       const response = await axios.put(
-        "admin_view/add_provider",
+        endpoint,
         {
           provider_id: Selectedprovider.id,
           name: values.Name,
@@ -289,12 +295,7 @@ export const EditproviderModel = () => {
     setValues,
   } = useFormik({
     initialValues: initialValues,
-    // validationSchema: ProviderSchemas,
     onSubmit,
-    // onSubmit: (values, { resetForm }) => {
-    //   console.log(values);
-    //   resetForm();
-    // },
   });
 
   useEffect(() => {
@@ -310,7 +311,6 @@ export const EditproviderModel = () => {
         Email: Selectedprovider.email,
       });
 
-      // ✅ Combine country code + number for PhoneInput
       if (Selectedprovider.countryCode && Selectedprovider.mobile) {
         setValue(`${Selectedprovider.countryCode}${Selectedprovider.mobile}`);
       }
@@ -397,7 +397,6 @@ export const EditproviderModel = () => {
                   style={{
                     background: "var(--main-background-color-dark-green)",
                   }}
-                  // onClick={handleClose}
                 >
                   Submit
                 </Button>
@@ -418,6 +417,7 @@ export const DeleteproviderModel = () => {
     setSelectedprovider,
     reloadProviderList,
     setreloadProviderList,
+    is_subadmin,
   } = useContext(GlobalContext);
   const handleClose = () => {
     setDeleteprovidermodel(false);
@@ -428,7 +428,11 @@ export const DeleteproviderModel = () => {
   const handleDelete = async () => {
     setloading(true);
     try {
-      const response = await axios.delete("admin_view/add_provider", {
+      const endpoint = is_subadmin
+        ? "admin_view/add_provider"
+        : "admin_view/add_main_provider";
+
+      const response = await axios.delete(endpoint, {
         data: { provider_id: Selectedprovider.id },
         headers: {
           "Content-Type": "application/json",

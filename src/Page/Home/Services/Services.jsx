@@ -26,6 +26,8 @@ const Services = () => {
     setSelectedService,
     reloadServiceList,
     setreloadServiceList,
+    // ⬇️ use role to conditionally hide Add button & Actions
+    is_subadmin,
   } = useContext(GlobalContext);
 
   const [loading, setloading] = useState(false);
@@ -124,9 +126,12 @@ const Services = () => {
           {/* Header row */}
           <div className="heding_div">
             <div className="addbtn_div">
-              <NavLink className="secondary_btn" onClick={setAddServicemodel}>
-                Add Service
-              </NavLink>
+              {/* ⬇️ Hide Add Service button for subadmin */}
+              {!is_subadmin && (
+                <NavLink className="secondary_btn" onClick={setAddServicemodel}>
+                  Add Service
+                </NavLink>
+              )}
             </div>
 
             {/* IMPORTANT: Buttons and search are siblings */}
@@ -174,7 +179,7 @@ const Services = () => {
                   <th>Service Image</th>
                   <th>Service Title &amp; Description {lang.toUpperCase()}</th>
                   <th>Price</th>
-                  <th>Actions</th>
+                  {!is_subadmin && <th>Actions</th>}
                 </tr>
               </MDBTableHead>
               <MDBTableBody>
@@ -191,22 +196,26 @@ const Services = () => {
                       <p className="mb-1">{pickDesc(item)}</p>
                     </td>
                     <td>{item.service_price}</td>
-                    <td>
-                      <MDBBtn
-                        rounded size="sm"
-                        style={{ marginRight: "1rem", background: "var(--main-background-color-dark-green)" }}
-                        onClick={() => HandleEditmodel(item)}
-                      >
-                        {editIcon}
-                      </MDBBtn>
-                      <MDBBtn
-                        rounded size="sm"
-                        style={{ background: "var(--primary-color-lightgreen)" }}
-                        onClick={() => HandleDeletemodel(item)}
-                      >
-                        {deleteIcon}
-                      </MDBBtn>
-                    </td>
+                    {!is_subadmin && (
+                      <td>
+                        <MDBBtn
+                          rounded
+                          size="sm"
+                          style={{ marginRight: "1rem", background: "var(--main-background-color-dark-green)" }}
+                          onClick={() => HandleEditmodel(item)}
+                        >
+                          {editIcon}
+                        </MDBBtn>
+                        <MDBBtn
+                          rounded
+                          size="sm"
+                          style={{ background: "var(--primary-color-lightgreen)" }}
+                          onClick={() => HandleDeletemodel(item)}
+                        >
+                          {deleteIcon}
+                        </MDBBtn>
+                      </td>
+                    )}
                   </tr>
                 ))}
               </MDBTableBody>

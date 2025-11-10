@@ -194,26 +194,44 @@ const Sidebar = () => {
   const { isOpen, setIsOpen, is_subadmin } = useContext(GlobalContext);
   const [openSubMenus, setOpenSubMenus] = useState({});
   const [activeItem, setActiveItem] = useState(menuItems[0].name);
-  const [subActiveItem, setSubActive] = useState(menuItems[1].name);
   const [selectedItem, setSelectedItem] = useState(menuItems[0].name);
   const navi = useNavigate();
 
   console.log("📦 Sidebar → is_subadmin from context:", is_subadmin);
 
-  // ✅ memoize so it doesn't change every render
   const filteredMenuItems = useMemo(() => {
-    return is_subadmin
-      ? menuItems.filter(
-          (m) =>
-            m.name !== "Store Time" &&
-            m.name !== "Cars" &&
-            m.name !== "Banner" &&
-            m.name !== "Extras" &&
-            m.name !== "Contact Us" &&
-            m.name !== "Reports" &&
-            m.name !== "CMS"
-        )
-      : menuItems;
+    if (!is_subadmin) return menuItems;
+
+    const servicesSection = menuItems.find((m) => m.name === "Services");
+    const servicesFlattened =
+      servicesSection?.items?.map(({ name, link, icon }) => ({
+        name: name === "Service Provider" ? "Workers" : name, // rename here
+        link,
+        icon,
+      })) || [];
+
+    const baseFiltered = menuItems.filter(
+      (m) =>
+        m.name !== "User Lists" &&
+        m.name !== "Services" && // hide group
+        m.name !== "Store Time" &&
+        m.name !== "Cars" &&
+        m.name !== "Banner" &&
+        m.name !== "Extras" &&
+        m.name !== "Contact Us" &&
+        m.name !== "Reports" &&
+        m.name !== "CMS"
+    );
+
+    const result = [];
+    baseFiltered.forEach((m) => {
+      result.push(m);
+      if (m.name === "Dashboard") {
+        result.push(...servicesFlattened);
+      }
+    });
+
+    return result;
   }, [is_subadmin]);
 
   console.log(
@@ -236,10 +254,8 @@ const Sidebar = () => {
   };
 
   const handleClick = (item) => {
-    console.log("👉 clicked menu/item:", item);
     setActiveItem(item.name);
     setSelectedItem(item.name);
-    setSubActive(item.name);
     if (item.link) {
       navi(item.link);
     }
@@ -272,7 +288,7 @@ const Sidebar = () => {
       setActiveItem(activeItemName);
       setSelectedItem(activeItemName);
     }
-  }, [location.pathname, filteredMenuItems]); // ✅ only path + memoized array
+  }, [location.pathname, filteredMenuItems]);
 
   return (
     <aside className={`sidebar ${isOpen ? "open" : "closed"}`}>

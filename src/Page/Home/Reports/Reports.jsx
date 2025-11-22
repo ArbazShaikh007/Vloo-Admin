@@ -22,13 +22,17 @@ const FILTER_MAP = {
   "6-months": "6 Months",
   yearly: "Yearly",
   "custom-date": "Monthly", // ignored by API when specific_date is provided
+  "date-range": "Monthly", // ignored by API when from_date/to_date are provided
 };
 
 const Reports = () => {
   const [selectedFilter, setSelectedFilter] = useState("monthly");
   const [customDate, setCustomDate] = useState("");
+  const [fromDate, setFromDate] = useState("");
+  const [toDate, setToDate] = useState("");
   const [searchTerm, setSearchTerm] = useState("");
   const [showDateInputs, setShowDateInputs] = useState(false);
+  const [showRangeInputs, setShowRangeInputs] = useState(false);
 
   const [loading, setLoading] = useState(false);
   const [providers, setProviders] = useState([]);
@@ -56,12 +60,21 @@ const Reports = () => {
         payload.specific_date = customDate; // server overrides filter_text
       }
 
-      const res = await axios.post("/admin_view/provider_monthly_report", payload, {
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `${token}`,
-        },
-      });
+      if (selectedFilter === "date-range" && fromDate && toDate) {
+        payload.from_date = fromDate;
+        payload.to_date = toDate;
+      }
+
+      const res = await axios.post(
+        "/admin_view/provider_monthly_report",
+        payload,
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `${token}`,
+          },
+        }
+      );
 
       const data = res?.data || {};
       if (data.status !== 1) {
@@ -103,7 +116,7 @@ const Reports = () => {
     } finally {
       setLoading(false);
     }
-  }, [selectedFilter, customDate, searchTerm, token]);
+  }, [selectedFilter, customDate, fromDate, toDate, searchTerm, token]);
 
   // Debounced search
   useEffect(() => {
@@ -113,17 +126,28 @@ const Reports = () => {
 
   // Filter/date changes
   useEffect(() => {
-    if (selectedFilter !== "custom-date") {
-      fetchReport();
-    } else if (customDate) {
+    if (selectedFilter === "custom-date") {
+      if (customDate) {
+        fetchReport();
+      }
+    } else if (selectedFilter === "date-range") {
+      if (fromDate && toDate) {
+        fetchReport();
+      }
+    } else {
       fetchReport();
     }
-  }, [selectedFilter, customDate, fetchReport]);
+  }, [selectedFilter, customDate, fromDate, toDate, fetchReport]);
 
   const handleFilterChange = (filter) => {
     setSelectedFilter(filter);
     setShowDateInputs(filter === "custom-date");
+    setShowRangeInputs(filter === "date-range");
     if (filter !== "custom-date") setCustomDate("");
+    if (filter !== "date-range") {
+      setFromDate("");
+      setToDate("");
+    }
   };
 
   const getProviderStats = (row) => ({
@@ -152,7 +176,11 @@ const Reports = () => {
           ? customDate
             ? `Specific Date: ${customDate}`
             : "Specific Date"
-          : (FILTER_MAP[selectedFilter] || "Monthly"),
+          : selectedFilter === "date-range"
+          ? fromDate && toDate
+            ? `From: ${fromDate} To: ${toDate}`
+            : "Date Range"
+          : FILTER_MAP[selectedFilter] || "Monthly",
       searchTerm: searchTerm || null,
     };
 
@@ -224,6 +252,7 @@ const Reports = () => {
               { key: "6-months", label: "6 Months" },
               { key: "yearly", label: "Yearly" },
               { key: "custom-date", label: "Specific Date" },
+              { key: "date-range", label: "Date Range" },
             ].map((filter) => (
               <button
                 key={filter.key}
@@ -247,6 +276,31 @@ const Reports = () => {
                   onChange={(e) => setCustomDate(e.target.value)}
                   className="date-input"
                   placeholder="Select date"
+                />
+              </div>
+            </div>
+          )}
+
+          {showRangeInputs && (
+            <div className="date-inputs">
+              <div className="date-input-group">
+                <MdCalendarToday className="input-icon" />
+                <input
+                  type="date"
+                  value={fromDate}
+                  onChange={(e) => setFromDate(e.target.value)}
+                  className="date-input"
+                  placeholder="From date"
+                />
+              </div>
+              <div className="date-input-group">
+                <MdCalendarToday className="input-icon" />
+                <input
+                  type="date"
+                  value={toDate}
+                  onChange={(e) => setToDate(e.target.value)}
+                  className="date-input"
+                  placeholder="To date"
                 />
               </div>
             </div>
@@ -381,7 +435,9 @@ const Reports = () => {
                     <td className="stat-cell accepted-stat">
                       {stats.accepted}
                     </td>
-                    <td className="stat-cell pending-stat">{stats.pending}</td>
+                    <td className="stat-cell pending-stat">
+                      {stats.pending}
+                    </td>
                     <td className="stat-cell rejected-stat">
                       {stats.rejected}
                     </td>

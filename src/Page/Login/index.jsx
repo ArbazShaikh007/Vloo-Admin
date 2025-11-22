@@ -8,7 +8,7 @@ import { LoginSchemas } from "../../schemas/index";
 import { useNavigate } from "react-router-dom";
 import { useLocation } from "react-router-dom";
 import Backdrop from "@mui/material/Backdrop";
-import { GlobalContext } from "../../GlobalContext"; // ✅ you already import this
+import { GlobalContext } from "../../GlobalContext";
 import CircularProgress from "@mui/material/CircularProgress";
 import Loader from "../../Common/loader/index";
 import { toast, Toaster } from "react-hot-toast";
@@ -21,9 +21,12 @@ const initialValues = {
 };
 
 const Index = () => {
-  // ✅ GET setIsSubadmin FROM CONTEXT
-  const { forgotPasswordModel, setForgotPasswordModel, setIsSubadmin, setprofileData } =
-    useContext(GlobalContext);
+  const {
+    forgotPasswordModel,
+    setForgotPasswordModel,
+    setIsSubadmin,
+    setprofileData,
+  } = useContext(GlobalContext);
 
   const [loading, setloading] = useState(false);
   const [passwordShown, setPasswordShown] = useState(false);
@@ -53,16 +56,12 @@ const Index = () => {
       console.log("check success response ===>", response);
 
       if (response?.data?.status === 1) {
-        // ✅ grab user object
         const user = response?.data?.data;
 
-        // ✅ store in context if you want
         if (setprofileData) {
           setprofileData(user);
         }
 
-        // ✅ THIS is the important part
-        // API gave: "is_subadmin": true
         if (
           user?.is_subadmin === true ||
           user?.is_subadmin === 1 ||
@@ -75,18 +74,18 @@ const Index = () => {
           setIsSubadmin && setIsSubadmin(false);
         }
 
-        toast.success(response?.data?.message, {
+        toast.dismiss();
+        const toastId = toast.success(response?.data?.message, {
           position: "top-right",
-          style: {
-            background: "#333",
-            color: "#fff",
-          },
+          duration: 3000,
+          style: { background: "#333", color: "#fff" },
         });
+        setTimeout(() => {
+          toast.dismiss(toastId);
+        }, 2000);
 
-        // ✅ keep your navigation
         navigate("/Home");
 
-        // ✅ keep your localStorage
         localStorage.setItem(
           "Login Response",
           JSON.stringify(response?.data?.data)
@@ -95,18 +94,21 @@ const Index = () => {
           "MYtokan",
           JSON.stringify(response?.data?.data?.token)
         );
-      } else
+      } else {
+        toast.dismiss();
         toast.error(response?.data?.message, {
           position: "top-right",
+          duration: 3000,
         });
+      }
+
       setloading(false);
     } catch (error) {
+      toast.dismiss();
       toast.error(error?.response?.data?.message, {
         position: "top-right",
-        style: {
-          background: "#333",
-          color: "#fff",
-        },
+        duration: 3000,
+        style: { background: "#333", color: "#fff" },
       });
 
       setloading(false);

@@ -162,7 +162,7 @@ export const AssignservicesModel = () => {
 
       return {
         // Keep sending the subzone ID (handles both id or sub_zone_id keys)
-        value: (s.sub_zone_id ?? s.id),
+        value: s.sub_zone_id ?? s.id,
         label: String(label),
       };
     });
@@ -271,7 +271,7 @@ export const AssignservicesModel = () => {
               )}
 
               <div className="input_filed_div">
-                <label htmlFor="">Provider</label>
+                <label htmlFor="">{is_subadmin ? "Worker" : "Provider"}</label>
                 <div className="brand_filter" style={{ width: "100%" }}>
                   <Select
                     styles={{ width: "100%" }}
@@ -284,7 +284,9 @@ export const AssignservicesModel = () => {
                     onChange={(option) =>
                       setFieldValue("Provider", option ? option.value : "")
                     }
-                    placeholder="Select Provider"
+                    placeholder={
+                      is_subadmin ? "Select Worker" : "Select Provider"
+                    }
                     isClearable
                   />
                 </div>
@@ -408,7 +410,9 @@ export const EditAssignservicesModel = () => {
       const service = ServiceOptions.find(
         (opt) => opt.label === SelectedAssigned.ServiceTittle
       );
-      const zone = ZoneOptions.find((opt) => opt.label === SelectedAssigned.Zone);
+      const zone = ZoneOptions.find(
+        (opt) => opt.label === SelectedAssigned.Zone
+      );
       const provider = ProviderOptions.find(
         (opt) => opt.label === SelectedAssigned.Provider
       );
@@ -452,7 +456,10 @@ export const EditAssignservicesModel = () => {
                       ) || null
                     }
                     onChange={(option) =>
-                      setFieldValue("ServiceTittle", option ? option.value : "")
+                      setFieldValue(
+                        "ServiceTittle",
+                        option ? option.value : ""
+                      )
                     }
                     placeholder="Select Service"
                     isClearable

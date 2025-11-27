@@ -206,39 +206,43 @@ const Sidebar = () => {
   console.log("📦 Sidebar → is_subadmin from context:", is_subadmin);
 
   const filteredMenuItems = useMemo(() => {
-    if (!is_subadmin) return menuItems;
+    // ✅ If subadmin → use existing restricted menu, BUT keep "Reports"
+    if (is_subadmin) {
+      const servicesSection = menuItems.find((m) => m.name === "Services");
+      const servicesFlattened =
+        servicesSection?.items?.map(({ name, link, icon }) => ({
+          name: name === "Service Provider" ? "Workers" : name, // rename here
+          link,
+          icon,
+        })) || [];
 
-    const servicesSection = menuItems.find((m) => m.name === "Services");
-    const servicesFlattened =
-      servicesSection?.items?.map(({ name, link, icon }) => ({
-        name: name === "Service Provider" ? "Workers" : name, // rename here
-        link,
-        icon,
-      })) || [];
+      const baseFiltered = menuItems.filter(
+        (m) =>
+          m.name !== "User Lists" &&
+          m.name !== "Services" && // hide group
+          m.name !== "Store Time" &&
+          m.name !== "Cars" &&
+          m.name !== "Banner" &&
+          m.name !== "Extras" &&
+          m.name !== "Contact Us" &&
+          m.name !== "CMS" &&
+          m.name !== "Broadcast"
+          // 🔹 Notice: we DO NOT exclude "Reports" here
+      );
 
-    const baseFiltered = menuItems.filter(
-      (m) =>
-        m.name !== "User Lists" &&
-        m.name !== "Services" && // hide group
-        m.name !== "Store Time" &&
-        m.name !== "Cars" &&
-        m.name !== "Banner" &&
-        m.name !== "Extras" &&
-        m.name !== "Contact Us" &&
-        m.name !== "Reports" &&
-        m.name !== "CMS"&&
-        m.name !== "Broadcast"
-    );
+      const result = [];
+      baseFiltered.forEach((m) => {
+        result.push(m);
+        if (m.name === "Dashboard") {
+          result.push(...servicesFlattened);
+        }
+      });
 
-    const result = [];
-    baseFiltered.forEach((m) => {
-      result.push(m);
-      if (m.name === "Dashboard") {
-        result.push(...servicesFlattened);
-      }
-    });
+      return result;
+    }
 
-    return result;
+    // ✅ If NOT subadmin → show full menu EXCEPT "Reports"
+    return menuItems.filter((m) => m.name !== "Reports");
   }, [is_subadmin]);
 
   console.log(

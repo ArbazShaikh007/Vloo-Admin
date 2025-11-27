@@ -36,11 +36,13 @@ export const AssignservicesModel = () => {
   };
 
   const initialValues = {
-    ServiceTittle: "", // will hold the id (number) of service
+    // For subadmin: support MULTI selection (arrays)
+    ServiceTittle: is_subadmin ? [] : "",
     Zone: "",
-    SubZone: "", // used when is_subadmin is true
-    Provider: "",
+    SubZone: "",
+    Provider: is_subadmin ? [] : "",
   };
+
   const [loading, setloading] = useState(false);
 
   const [ServiceTittleData, setServiceTittleData] = useState();
@@ -73,7 +75,7 @@ export const AssignservicesModel = () => {
     setloading(true);
     try {
       const payload = {
-        provider_id: values.Provider,
+        provider_id: values.Provider, // can be single id or array when is_subadmin
         zone_id: values.Zone,
         ...(is_subadmin ? { service_id: values.ServiceTittle } : {}),
         ...(is_subadmin ? { sub_zone_id: values.SubZone } : {}),
@@ -99,15 +101,30 @@ export const AssignservicesModel = () => {
     }
   };
 
-  // ✅ Conditional validation
+  // ✅ Conditional validation (supports arrays for multi-select)
   const validate = (values) => {
     const errors = {};
     if (!values.Zone) errors.Zone = "Zone is required";
-    if (!values.Provider) errors.Provider = "Provider is required";
-    if (is_subadmin && !values.ServiceTittle)
+
+    if (
+      !values.Provider ||
+      (Array.isArray(values.Provider) && values.Provider.length === 0)
+    ) {
+      errors.Provider = is_subadmin ? "Worker is required" : "Provider is required";
+    }
+
+    if (
+      is_subadmin &&
+      (!values.ServiceTittle ||
+        (Array.isArray(values.ServiceTittle) &&
+          values.ServiceTittle.length === 0))
+    ) {
       errors.ServiceTittle = "Service is required";
+    }
+
     if (is_subadmin && !values.SubZone)
       errors.SubZone = "Sub Zone is required";
+
     return errors;
   };
 
@@ -151,7 +168,6 @@ export const AssignservicesModel = () => {
     );
     const subs = selectedZone?.sub_zone_list || [];
     const mapped = subs.map((s) => {
-      // 👇 show sub-zone NAME; your API uses zone_name inside each sub_zone_list item
       const label =
         s.zone_name ??
         s.sub_zone_name ??
@@ -161,7 +177,6 @@ export const AssignservicesModel = () => {
         `Sub Zone #${s.id ?? s.sub_zone_id}`;
 
       return {
-        // Keep sending the subzone ID (handles both id or sub_zone_id keys)
         value: s.sub_zone_id ?? s.id,
         label: String(label),
       };
@@ -198,15 +213,18 @@ export const AssignservicesModel = () => {
                     <Select
                       styles={{ width: "100%" }}
                       options={ServiceOptions}
+                      isMulti={true}
                       value={
-                        ServiceOptions?.find(
-                          (option) => option.value === values.ServiceTittle
-                        ) || null
+                        ServiceOptions?.filter((option) =>
+                          Array.isArray(values.ServiceTittle)
+                            ? values.ServiceTittle.includes(option.value)
+                            : false
+                        ) || []
                       }
-                      onChange={(option) =>
+                      onChange={(selected) =>
                         setFieldValue(
                           "ServiceTittle",
-                          option ? option.value : ""
+                          selected ? selected.map((opt) => opt.value) : []
                         )
                       }
                       placeholder="Select Service"
@@ -276,14 +294,26 @@ export const AssignservicesModel = () => {
                   <Select
                     styles={{ width: "100%" }}
                     options={ProviderOptions}
+                    isMulti={is_subadmin}
                     value={
-                      ProviderOptions?.find(
-                        (option) => option.value === values.Provider
-                      ) || null
+                      is_subadmin
+                        ? ProviderOptions?.filter((option) =>
+                            Array.isArray(values.Provider)
+                              ? values.Provider.includes(option.value)
+                              : false
+                          ) || []
+                        : ProviderOptions?.find(
+                            (option) => option.value === values.Provider
+                          ) || null
                     }
-                    onChange={(option) =>
-                      setFieldValue("Provider", option ? option.value : "")
-                    }
+                    onChange={(option) => {
+                      if (is_subadmin) {
+                        const ids = option ? option.map((o) => o.value) : [];
+                        setFieldValue("Provider", ids);
+                      } else {
+                        setFieldValue("Provider", option ? option.value : "");
+                      }
+                    }}
                     placeholder={
                       is_subadmin ? "Select Worker" : "Select Provider"
                     }

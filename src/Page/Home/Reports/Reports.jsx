@@ -379,7 +379,7 @@ const Reports = () => {
       <div className="table-container">
         <div className="table-header">
           <div className="table-header-content">
-            <h2>Service Providers ({providerCount})</h2>
+            <h2>Workers ({providerCount})</h2>
             <button
               className="download-btn small"
               onClick={handleDownloadPDF}
@@ -396,7 +396,7 @@ const Reports = () => {
           <table className="providers-table">
             <thead>
               <tr>
-                <th>Provider Info</th>
+                <th>Worker Info</th>
                 <th>Rating</th>
                 <th>Total</th>
                 <th>Completed</th>

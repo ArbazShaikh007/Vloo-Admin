@@ -74,7 +74,7 @@ const Index = () => {
           setIsSubadmin && setIsSubadmin(false);
         }
 
-        toast.dismiss();
+        // toast.dismiss();
         const toastId = toast.success(response?.data?.message, {
           position: "top-right",
           duration: 3000,
@@ -82,7 +82,7 @@ const Index = () => {
         });
         setTimeout(() => {
           toast.dismiss(toastId);
-        }, 2000);
+        }, 1000);
 
         navigate("/Home");
 

@@ -75,14 +75,12 @@ const Index = () => {
         }
 
         // toast.dismiss();
-        const toastId = toast.success(response?.data?.message, {
-          position: "top-right",
-          duration: 3000,
-          style: { background: "#333", color: "#fff" },
-        });
-        setTimeout(() => {
-          toast.dismiss(toastId);
-        }, 1000);
+        toast.success(response?.data?.message, {
+  position: "top-right",
+  duration: 3000,
+  style: { background: "#333", color: "#fff" },
+});
+
 
         navigate("/Home");
 

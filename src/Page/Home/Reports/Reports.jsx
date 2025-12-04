@@ -118,11 +118,12 @@ const Reports = () => {
     }
   }, [selectedFilter, customDate, fromDate, toDate, searchTerm, token]);
 
-  // Debounced search
+  // Debounced search — do NOT auto-trigger for date-range
   useEffect(() => {
+    if (selectedFilter === "date-range") return; // prevent automatic calls while user picks range
     const t = setTimeout(() => fetchReport(), 300);
     return () => clearTimeout(t);
-  }, [fetchReport]);
+  }, [fetchReport, selectedFilter]);
 
   // Filter/date changes
   useEffect(() => {
@@ -131,13 +132,13 @@ const Reports = () => {
         fetchReport();
       }
     } else if (selectedFilter === "date-range") {
-      if (fromDate && toDate) {
-        fetchReport();
-      }
+      // do NOT auto-fetch for date-range; wait for Apply button
     } else {
       fetchReport();
     }
-  }, [selectedFilter, customDate, fromDate, toDate, fetchReport]);
+    // note: intentionally not including fromDate/toDate in deps here
+    // to avoid auto fetching when user types/picks dates — Apply controls that.
+  }, [selectedFilter, customDate, fetchReport]);
 
   const handleFilterChange = (filter) => {
     setSelectedFilter(filter);
@@ -302,6 +303,22 @@ const Reports = () => {
                   className="date-input"
                   placeholder="To date"
                 />
+              </div>
+
+              {/* NEW: Apply button for Date Range */}
+              <div className="date-range-actions">
+                <button
+                  className="apply-btn"
+                  onClick={() => {
+                    // Only call fetch if both dates are present
+                    if (fromDate && toDate) {
+                      fetchReport();
+                    }
+                  }}
+                  disabled={loading || !(fromDate && toDate)}
+                >
+                  Apply
+                </button>
               </div>
             </div>
           )}

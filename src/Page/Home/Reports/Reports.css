@@ -29,6 +29,21 @@
   padding: 2rem;
 }
 
+.apply-btn {
+  padding: 8px 18px;
+  border-radius: 8px;
+  background-color: #0F777F;
+  color: #fff;
+  border: none;
+  cursor: pointer;
+  font-weight: 500;
+}
+
+.apply-btn:hover {
+  background-color: #0C5F66;
+}
+
+
 .dashboard-header {
   background: linear-gradient(
     135deg,
